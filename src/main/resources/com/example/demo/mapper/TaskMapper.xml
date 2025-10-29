@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.TaskMapper">
+	<select id="selectAlltask"
+		resultType="com.example.demo.model.entity.Tasks">
+		SELECT
+		task_id as taskId,
+		task_name as taskName,
+		importance,
+		urgency,
+		user_id as userId,
+		state_id as stateId
+		FROM tasks
+		ORDER BY task_id
+	</select>
+	<insert id="saveTask"
+		parameterType="com.example.demo.model.entity.Tasks">
+		INSERT INTO tasks(
+		task_name,
+		importance,
+		urgency,
+		user_id,
+		state_id)
+		VALUES(
+		#{taskName},
+		#{importance},
+		#{urgency},
+		#{userId},
+		#{stateId}
+		)
+	</insert>
+	<update id="updateTask"
+		parameterType="com.example.demo.model.entity.Tasks">
+		UPDATE tasks
+		<set>
+			<if test="taskName != null or taskName != ''">task_name = #{taskName},</if>
+			<if test="importance != null">importance = #{importance},</if>
+			<if test="urgency != null">urgency = #{urgency},</if>
+			<if test="stateId != null">state_id = #{stateId},</if>
+		</set>
+		WHERE task_id = #{taskId}
+	</update>
+	<delete id="deleteTask" parameterType="long">
+		DELETE
+		FROM Tasks
+		WHERE task_id = #{taskId}
+	</delete>
+</mapper>

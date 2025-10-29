@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>todo graph</title>
+  </head>
+  <body>
+    <h1>task一覧</h1>
+    <table>
+      <tr>
+        <th>タスクID</th>
+        <th>タスク名</th>
+        <th>重要度</th>
+        <th>緊急度</th>
+        <th>タスクの状態</th>
+        <th>誰のタスク</th>
+      </tr>
+      <tr th:each="task : ${tasks}">
+        <td>
+          <label th:text="${task.taskId}"> </label>
+        </td>
+        <td>
+          <label>
+            タスク名：
+            <input
+              type="text"
+              th:name="taskName"
+              th:value="${task.taskName}"
+              readonly
+            />
+          </label>
+        </td>
+        <td>
+          <label>
+            重要度：
+            <input
+              type="text"
+              th:name="importance"
+              th:value="${task.importance}"
+              readonly
+            />
+          </label>
+        </td>
+        <td>
+          <label>
+            緊急度：
+            <input
+              type="text"
+              th:name="urgency"
+              th:value="${task.urgency}"
+              readonly
+            />
+          </label>
+        </td>
+        <td>
+          <label>
+            タスクの状態：
+            <input
+              type="text"
+              th:name="stateId"
+              th:value="${task.stateId}"
+              readonly
+            />
+          </label>
+        </td>
+        <td>
+          <label>
+            誰のタスク：
+            <input
+              type="text"
+              th:name="userId"
+              th:value="${task.userId}"
+              readonly
+            />
+          </label>
+        </td>
+      </tr>
+    </table>
+    <h2>更新したいタスクを選択</h2>
+
+    <form th:object="${Task}" th:action="@{/update}" method="post">
+      <select th:name="taskId">
+        <option
+          th:each="task: ${tasks}"
+          th:value="${task.taskId}"
+          th:text="${task.taskId}"
+        ></option>
+        n>
+      </select>
+      <label>
+        タスク名：
+        <input type="text" th:name="taskName" />
+      </label>
+      <input type="hidden" name="stateId" value="1" />
+      <input type="submit" value="更新" />
+    </form>
+
+    <h2>削除したいタスクを選択</h2>
+    <form th:object="${TaskId}" th:action="@{/delete}" method="post">
+      <table>
+        <tr>
+          <td>
+            <p>削除したいタスク</p>
+            <select th:name="taskId">
+              <option
+                th:each="task: ${tasks}"
+                th:value="${task.taskId}"
+                th:text="${task.taskId}"
+              ></option>
+            </select>
+            <input type="submit" value="削除" />
+          </td>
+        </tr>
+      </table>
+    </form>
+
+    <h2>追加したいタスク</h2>
+    <form th:object="${Task}" th:action="@{/add}" method="post">
+      <p>誰のタスクに追加する？</p>
+      <select th:name="userId">
+        <option th:value="1">1</option>
+        <option th:value="2">2</option>
+        <option th:value="3">3</option>
+      </select>
+      <table>
+        <tr>
+          <td>
+            <label>
+              タスク名：
+              <input type="text" th:name="taskName" />
+            </label>
+          </td>
+          <td>
+            <label>
+              重要度：
+              <input type="text" th:name="importance" />
+            </label>
+          </td>
+          <td>
+            <label> 緊急度： <input type="text" th:name="urgency" /> </label>
+          </td>
+          <td>
+            <label>
+              タスクの状態： <input type="text" th:name="stateId" />
+            </label>
+          </td>
+        </tr>
+      </table>
+      <input type="submit" value="追加" />
+    </form>
+  </body>
+</html>
