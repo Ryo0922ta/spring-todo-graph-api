@@ -18,19 +18,38 @@
 	</select>
 	<insert id="saveTask"
 		parameterType="com.example.demo.model.entity.Tasks">
-		INSERT INTO tasks(
-		task_name,
-		importance,
-		urgency,
-		user_id,
-		state_id)
-		VALUES(
-		#{taskName},
-		#{importance},
-		#{urgency},
-		#{userId},
-		#{stateId}
-		)
+		<choose>
+			<when test="stateId == null">
+				INSERT INTO tasks(
+					task_name,
+					importance,
+					urgency,
+					user_id
+				)
+				VALUES(
+					#{taskName},
+					#{importance},
+					#{urgency},
+					#{userId}
+				)
+			</when>
+			<otherwise>
+				INSERT INTO tasks(
+					task_name,
+					importance,
+					urgency,
+					user_id,
+					state_id
+				)
+				VALUES(
+					#{taskName},
+					#{importance},
+					#{urgency},
+					#{userId},
+					#{stateId}
+				)
+			</otherwise>
+		</choose>
 	</insert>
 	<update id="updateTask"
 		parameterType="com.example.demo.model.entity.Tasks">
