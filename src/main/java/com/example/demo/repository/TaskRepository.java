@@ -13,7 +13,7 @@ public interface TaskRepository {
 	public Tasks findTasks(Long taskId);
 
 	//タスクの保存
-	public Integer saveTask(Tasks task);
+	public void saveTask(Tasks task);
 
 	//タスクの更新
 	public Integer updateTask(Tasks task);

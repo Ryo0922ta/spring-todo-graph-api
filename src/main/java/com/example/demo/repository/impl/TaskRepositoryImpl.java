@@ -32,9 +32,9 @@ public class TaskRepositoryImpl implements TaskRepository {
 	}
 
 	@Override
-	public Integer saveTask(Tasks task) {
-		Integer saveCount = taskMapper.saveTask(task);
-		return saveCount;
+	public void saveTask(Tasks task) {
+		taskMapper.saveTask(task);
+		return;
 	}
 
 	@Override

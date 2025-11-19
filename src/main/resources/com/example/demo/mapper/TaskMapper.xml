@@ -29,7 +29,9 @@
 		WHERE task_id = #{taskId}
 	</select>
 	<insert id="saveTask"
-		parameterType="com.example.demo.model.entity.Tasks">
+		parameterType="com.example.demo.model.entity.Tasks"
+		useGeneratedKeys="true" keyProperty="taskId"
+		>
 		<choose>
 			<when test="stateId == null">
 				INSERT INTO tasks(

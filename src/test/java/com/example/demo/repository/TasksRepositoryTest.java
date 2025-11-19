@@ -60,18 +60,22 @@ public class TasksRepositoryTest {
 	@Test
 	void TestInsert() {
 		TasksDTO dto = new TasksDTO(
-				null,
-				"test task",
-				5,
-				5,
-				1L,
-				1L);
+				null, //taskId
+				"test task", // taskname
+				5, // importance
+				5, // urgency
+				1L, // user_id
+				null); // state_id null
 
 		TaskConverter taskConverter = new TaskConverter();
 		Tasks task = taskConverter.toTaskEntity(dto);
-		int result = taskRepository.saveTask(task);
+		taskRepository.saveTask(task);
 
-		assertEquals(1, result);
+		System.out.println("TestInsert() 実行してます。");
+
+		System.out.println("たすくID : " + task.getTaskId());
+
+		assertNotNull(task.getTaskId());
 	};
 
 }

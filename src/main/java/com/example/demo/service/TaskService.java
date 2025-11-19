@@ -40,10 +40,12 @@ public class TaskService {
 	}
 
 	//タスクの追加
-	public Integer saveTask(TasksDTO taskDto) {
+	public TasksDTO saveTask(TasksDTO taskDto) {
 		Tasks task = taskConverter.toTaskEntity(taskDto);
-		Integer saveCount = taskRepository.saveTask(task);
-		return saveCount;
+		taskRepository.saveTask(task);
+		Tasks newTask = taskRepository.findTasks(task.getTaskId());
+		TasksDTO tasksDto = taskConverter.toTasksDTO(newTask);
+		return tasksDto;
 
 	}
 

@@ -89,6 +89,10 @@
     transition: 0.3s;
 }
 
+.form-group button:hover {
+    background: #3a50cb;
+}
+
 .main-content {
     display: grid;
     grid-template-columns: 2fr 1fr;

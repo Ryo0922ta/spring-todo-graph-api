@@ -36,16 +36,15 @@ public class TasksController {
 
 	@GetMapping("{id}")
 	public TasksDTO getTask(@PathVariable(ID) Long id) {
-		TasksDTO dto = taskService.findTask(id);
-		return dto;
+		TasksDTO taskDto = taskService.findTask(id);
+		return taskDto;
 	}
 
 	//postは新規登録などのみ
 	@PostMapping()
-	public void add(@RequestBody TasksDTO taskDto) {
-		Integer addCount = taskService.saveTask(taskDto);
-		System.out.println("追加タスク" + addCount + "件");
-		return;
+	public TasksDTO add(@RequestBody TasksDTO taskDto) {
+		TasksDTO newTasksDto = taskService.saveTask(taskDto);
+		return newTasksDto;
 	}
 
 	//更新はPut
