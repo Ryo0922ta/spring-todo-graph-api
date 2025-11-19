@@ -11,6 +11,8 @@ public interface TaskMapper {
 
 	public List<Tasks> selectAlltask();
 
+	public Tasks selectTask(Long taskId);
+
 	public Integer saveTask(Tasks task);
 
 	public Integer updateTask(Tasks task);

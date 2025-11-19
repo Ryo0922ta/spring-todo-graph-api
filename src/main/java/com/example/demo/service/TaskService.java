@@ -32,15 +32,24 @@ public class TaskService {
 		return taskListDTO;
 	}
 
+	//任意のタスク表示
+	public TasksDTO findTask(Long taskId) {
+		Tasks task = taskRepository.findTasks(taskId);
+		TasksDTO tasksDTO = taskConverter.toTasksDTO(task);
+		return tasksDTO;
+	}
+
 	//タスクの追加
-	public Integer saveTask(Tasks task) {
+	public Integer saveTask(TasksDTO taskDto) {
+		Tasks task = taskConverter.toTaskEntity(taskDto);
 		Integer saveCount = taskRepository.saveTask(task);
 		return saveCount;
 
 	}
 
 	//タスク更新
-	public Integer updateTask(Tasks task) {
+	public Integer updateTask(TasksDTO taskDto) {
+		Tasks task = taskConverter.toTaskEntity(taskDto);
 		Integer updateCount = taskRepository.updateTask(task);
 		return updateCount;
 	}

@@ -26,6 +26,12 @@ public class TaskRepositoryImpl implements TaskRepository {
 	}
 
 	@Override
+	public Tasks findTasks(Long taskId) {
+		Tasks task = taskMapper.selectTask(taskId);
+		return task;
+	}
+
+	@Override
 	public Integer saveTask(Tasks task) {
 		Integer saveCount = taskMapper.saveTask(task);
 		return saveCount;

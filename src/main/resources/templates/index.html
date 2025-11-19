@@ -1,109 +1,92 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>todo graph</title>
-  </head>
-  <body>
-    <h1>task一覧</h1>
-    <table border="1">
-      <tr>
-        <th>タスクID</th>
-        <th>タスク名</th>
-        <th>重要度</th>
-        <th>緊急度</th>
-        <th>タスクの状態</th>
-        <th>誰のタスク</th>
-      </tr>
-      <tr th:each="task : ${tasks}">
-        <td>
-          <label th:text="${task.taskId}"> </label>
-        </td>
-        <td>
-		  <span th:text="${task.taskName}"></span>
-        </td>
-        <td>
-		  <span th:text="${task.importance}"></span>
-        </td>
-        <td>
-		  <span th:text="${task.urgency}"></span>
-        </td>
-        <td>
-		  <span th:switch= "${task.stateId}" >
-			<span th:case="1">TO DO</span>
-			<span th:case="2">DOING</span>
-			<span th:case="3">DONE</span>
-		  </span>
-        </td>
-        <td>
-		<span th:text="${task.userId}"></span>
-        </td>
-      </tr>
-    </table>
-	
-    <h2>更新したいタスクを選択</h2>
-    <form th:object="${Task}" th:action="@{/update}" method="post">
-      <select th:name="taskId">
-        <option
-          th:each="task: ${tasks}"
-          th:value="${task.taskId}"
-          th:text="${task.taskId}"
-        ></option>
-      </select>
-      <label>
-        タスク名：
-        <input type="text" th:name="taskName" />
-      </label>
-      <input type="hidden" name="stateId" value="1" />
-      <input type="submit" value="更新" />
-    </form>
-
-    <h2>削除したいタスクを選択</h2>
-    <form th:object="${TaskId}" th:action="@{/delete}" method="post">
-		<p>削除したいタスク</p>
-            <select th:name="taskId">
-              <option
-                th:each="task: ${tasks}"
-                th:value="${task.taskId}"
-                th:text="${task.taskId}"
-              ></option>
-            </select>
-            <input type="submit" value="削除" />
-    </form>
-
-    <h2>追加したいタスク</h2>
-    <form th:object="${Task}" th:action="@{/add}" method="post">
-      <p>誰のタスクに追加する？</p>
-      <select th:name="userId">
-        <option th:value="1">1</option>
-        <option th:value="2">2</option>
-        <option th:value="3">3</option>
-      </select>
-      <table>
-        <tr>
-          <td>
-            <label>
-              タスク名：
-              <input type="text" th:name="taskName" />
-            </label>
-          </td>
-          <td>
-            <label>
-              重要度：
-              <input type="text" th:name="importance" />
-            </label>
-          </td>
-          <td>
-            <label> 緊急度： <input type="text" th:name="urgency" /> </label>
-          </td>
-          <td>
-            <label>
-              タスクの状態： <input type="text" th:name="stateId" />
-            </label>
-          </td>
-        </tr>
-      </table>
-      <input type="submit" value="追加" />
-    </form>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script th:src="@{webjars/jquery/3.7.1/jquery.min.js}" defer></script>
+        <script
+            th:src="@{webjars/jquery-ui/1.13.2/jquery-ui.min.js}"
+            defer
+        ></script>
+        <script
+            src="../static/js/script.js"
+            th:src="@{/js/script.js}"
+            defer
+        ></script>
+        <link
+            rel="stylesheet"
+            href="../static/css/style.css"
+            th:href="@{/css/style.css}"
+        />
+        <link
+            rel="stylesheet"
+            th:href="@{webjars/jquery-ui/1.13.2/jquery-ui.min.css}"
+        />
+        <title>todo graph</title>
+    </head>
+    <body class="body-style">
+        <div class="container">
+            <h1 class="h1-style">Todo Scatter Graph</h1>
+            <div class="task_form">
+                <h2 class="h2-style">新しいタスクを追加</h2>
+                <div class="form-group">
+                    <label>
+                        タスク名
+                        <input
+                            type="text"
+                            th:name="taskName"
+                            placeholder="タスクを入力"
+                        />
+                    </label>
+                    <label>
+                        優先度(1-10)
+                        <input
+                            type="number"
+                            th:name="importance"
+                            th:value="${5}"
+                            min="1"
+                            max="10"
+                        />
+                    </label>
+                    <label>
+                        優先度(1-10)
+                        <input
+                            type="number"
+                            th:name="urgency"
+                            th:value="${5}"
+                            min="1"
+                            max="10"
+                        />
+                    </label>
+                    <button id="addTaskBtn">タスク追加</button>
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="kanban-board">
+                    <div class="kanban-column todo" data-status="todo">
+                        <h3>📝Todo</h3>
+                        <div class="task-list ui-dorppable" id="todoList"></div>
+                    </div>
+                    <div
+                        class="kanban-column in-progress"
+                        data-status="in-progress"
+                    >
+                        <h3>🏃Doing</h3>
+                        <div
+                            class="task-list ui-dorppable"
+                            id="inProgressList"
+                        ></div>
+                    </div>
+                    <div class="kanban-column done" data-status="done">
+                        <h3>✅Done</h3>
+                        <div class="task-list ui-dorppable" id="doneList"></div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3>優先度・重要度散布図</h3>
+                    <div id="scatter-chart"></div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
