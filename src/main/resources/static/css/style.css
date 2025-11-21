@@ -8,9 +8,9 @@
 .body-style {
     /* なぜこんなにたくさんいるのか ? : 仕様上設定しているスタイルでフォントを表示する*/
     font-family: -apple-system, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    /* linear-gradient  135度に傾いたグラデージョンを表示*/
+    /* linear-gradient  グラデージョンを表示*/
     background: linear-gradient(#2e2b3e);
-    /* vh ? : view hight 1vhが画面表示の10%を表す？*/
+    /* vh ? : view hight ？*/
     min-height: 100vh;
     padding: 20px;
 }
@@ -167,12 +167,12 @@
 /* なぜtask-badgeにbackgroud指定じゃないのか */
 .urgency-badge {
     background: #fce7f3;
-    color: #1e40af;
+    color: #922206;
 }
 
 .importance-badge {
     background: #fce7f3;
-    color: #9f1239;
+    color: #5f9404;
 }
 
 .task-action {
@@ -180,8 +180,8 @@
     text-align: right;
 }
 
-.delete-btn {
-    background: #ef4444;
+.editTaskBtn,
+.deleteTaskBtn {
     color: white;
     border: none;
     border-radius: 4px;
@@ -189,6 +189,22 @@
     font-size: 0.75rem;
     cursor: pointer;
     transition: background 0.3s;
+}
+
+.editTaskBtn {
+    background: #667eea;
+}
+
+.deleteTaskBtn {
+    background: #667eea;
+}
+
+.editTaskBtn:hover {
+    background: #d51717;
+}
+
+.deleteTaskBtn:hover {
+    background: #d51717;
 }
 
 .chart-container {
@@ -202,7 +218,8 @@
     margin-bottom: 15px;
 }
 
-/* ここだけ高さ指定は意味があるのか ⇨ 散布図を表示したいのなら表示領域の内部を計算して配置する絶対位置の座標が必要なため*/
+/* ここだけ高さ指定は意味があるのか 
+⇨ 散布図を表示したいのなら表示領域の内部を計算して配置する絶対位置の座標が必要なため*/
 #scatter-chart {
     width: 100px;
     height: 400px;

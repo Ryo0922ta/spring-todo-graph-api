@@ -18,7 +18,6 @@ import com.example.demo.service.TaskService;
 @RequestMapping("/api/tasks")
 public class TasksController {
 
-	private static final String ID = "id";
 	private final TaskService taskService;
 
 	public TasksController(TaskService taskService) {
@@ -34,9 +33,9 @@ public class TasksController {
 		return tasks;
 	}
 
-	@GetMapping("{id}")
-	public TasksDTO getTask(@PathVariable(ID) Long id) {
-		TasksDTO taskDto = taskService.findTask(id);
+	@GetMapping("{taskId}")
+	public TasksDTO getTask(@PathVariable Long taskId) {
+		TasksDTO taskDto = taskService.findTask(taskId);
 		return taskDto;
 	}
 
@@ -48,18 +47,18 @@ public class TasksController {
 	}
 
 	//更新はPut
-	@PutMapping("{id}")
-	public void update(@PathVariable(ID) Long id, @RequestBody TasksDTO tasksDTO) {
-		tasksDTO.setTaskId(id);
+	@PutMapping("{taskId}")
+	public void update(@PathVariable Long taskId, @RequestBody TasksDTO tasksDTO) {
+		tasksDTO.setTaskId(taskId);
 		Integer updateCount = taskService.updateTask(tasksDTO);
 		System.out.println("更新タスク件数: " + updateCount + "件");
 		return;
 	}
 
-	//削除
-	@DeleteMapping("{id}")
-	public void delete(@PathVariable(ID) Long id) {
-		Integer deleteCount = taskService.deleteTask(id);
+	//削除　　@PathVariale("id")は冗長だから記述いらない
+	@DeleteMapping("{taskId}")
+	public void delete(@PathVariable Long taskId) {
+		Integer deleteCount = taskService.deleteTask(taskId);
 		System.out.println("削除タスク件数: " + deleteCount + "件");
 		return;
 	}
