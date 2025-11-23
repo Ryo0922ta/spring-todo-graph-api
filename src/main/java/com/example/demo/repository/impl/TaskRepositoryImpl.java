@@ -38,9 +38,9 @@ public class TaskRepositoryImpl implements TaskRepository {
 	}
 
 	@Override
-	public Integer updateTask(Tasks task) {
-		Integer updateCount = taskMapper.updateTask(task);
-		return updateCount;
+	public Tasks updateTask(Tasks task) {
+		Tasks updateTask = taskMapper.updateTask(task);
+		return updateTask;
 	}
 
 	@Override

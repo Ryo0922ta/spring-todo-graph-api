@@ -48,11 +48,10 @@ public class TasksController {
 
 	//更新はPut
 	@PutMapping("{taskId}")
-	public void update(@PathVariable Long taskId, @RequestBody TasksDTO tasksDTO) {
+	public TasksDTO update(@PathVariable Long taskId, @RequestBody TasksDTO tasksDTO) {
 		tasksDTO.setTaskId(taskId);
-		Integer updateCount = taskService.updateTask(tasksDTO);
-		System.out.println("更新タスク件数: " + updateCount + "件");
-		return;
+		TasksDTO taskDto = taskService.updateTask(tasksDTO);
+		return taskDto;
 	}
 
 	//削除　　@PathVariale("id")は冗長だから記述いらない

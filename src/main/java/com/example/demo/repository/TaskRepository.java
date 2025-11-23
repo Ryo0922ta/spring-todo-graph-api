@@ -16,7 +16,7 @@ public interface TaskRepository {
 	public void saveTask(Tasks task);
 
 	//タスクの更新
-	public Integer updateTask(Tasks task);
+	public Tasks updateTask(Tasks task);
 
 	//タスクの削除
 	public Integer deleteTask(Long taskId);

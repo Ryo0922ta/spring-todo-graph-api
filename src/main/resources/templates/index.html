@@ -39,7 +39,7 @@
                         />
                     </label>
                     <label>
-                        優先度(1-10)
+                        重要度(1-10)
                         <input
                             type="number"
                             th:name="importance"
@@ -83,8 +83,65 @@
                     </div>
                 </div>
                 <div class="chart-container">
-                    <h3>優先度・重要度散布図</h3>
+                    <h3>重要度・緊急度散布図</h3>
                     <div id="scatter-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div id="overlay" class="overlay">
+            <div class="taskDetailMdl">
+                <div class="mdl-container">
+                    <h3>変更を反映するには実行ボタンを押してください</h3>
+                    <div class="mdl-container-layout">
+                        <label class="mdl-label mdl-task-title">
+                            タスクタイトル
+                            <input
+                                type="text"
+                                th:name="editedTaskName"
+                                class="editTaskName"
+                            />
+                        </label>
+                        <label class="mdl-label mdl-task-detail">
+                            タスク詳細
+                            <textarea
+                                th:name="TaskDetail"
+                                class="taskDetail-textarea"
+                                rows="5"
+                                cols="50"
+                            >
+samle タスク詳細
+                            </textarea>
+                        </label>
+                        <div class="mdl-meta-layout">
+                            <label class="mdl-label mdl-left-item">
+                                <span class="mdl-bedge urgency"> 緊急度 </span>
+                                <input
+                                    type="number"
+                                    th:name="editedUrgency"
+                                    class="editUrgency"
+                                />
+                            </label>
+                            <label class="mdl-label mdl-right-item">
+                                <span class="mdl-bedge importance">
+                                    重要度
+                                </span>
+                                <input
+                                    type="number"
+                                    th:name="editedImportance"
+                                    class="editImportance"
+                                />
+                            </label>
+                        </div>
+                        <input
+                            type="hidden"
+                            th:name="editedTaskId"
+                            class="editTaskId"
+                        />
+                        <div class="mdl-action-btn">
+                            <button class="edit-action-btn">実行</button>
+                            <button class="close-mdl-btn">閉じる</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

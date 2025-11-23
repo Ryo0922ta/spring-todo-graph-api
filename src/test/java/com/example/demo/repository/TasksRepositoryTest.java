@@ -42,7 +42,7 @@ public class TasksRepositoryTest {
 
 	@Test
 	void TestSelectTask() {
-		Long testId = 2L;
+		Long testId = 3L;
 		Tasks Result = taskRepository.findTasks(testId);
 
 		assertNotNull(Result);
@@ -61,7 +61,7 @@ public class TasksRepositoryTest {
 	void TestInsert() {
 		TasksDTO dto = new TasksDTO(
 				null, //taskId
-				"test task", // taskname
+				"", // taskname  // これまずい。あとで修正必要
 				5, // importance
 				5, // urgency
 				1L, // user_id
@@ -73,9 +73,32 @@ public class TasksRepositoryTest {
 
 		System.out.println("TestInsert() 実行してます。");
 
-		System.out.println("たすくID : " + task.getTaskId());
-
 		assertNotNull(task.getTaskId());
 	};
 
+	@Test
+	void TestUpdate() {
+		TasksDTO dto = new TasksDTO(
+				3L, //taskId
+				"", // taskname
+				5, // importance
+				5, // urgency
+				1L, // user_id
+				null);
+
+		TaskConverter taskConverter = new TaskConverter();
+		Tasks task = taskConverter.toTaskEntity(dto);
+		Tasks Result = taskRepository.updateTask(task);
+
+		System.out.println("TestUpdate() 実行してます。");
+
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			System.out.println(
+					mapper.writerWithDefaultPrettyPrinter().writeValueAsString(Result));
+		} catch (JsonProcessingException e) {
+			// 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+	};
 }

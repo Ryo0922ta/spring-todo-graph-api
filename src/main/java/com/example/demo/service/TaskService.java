@@ -50,10 +50,11 @@ public class TaskService {
 	}
 
 	//タスク更新
-	public Integer updateTask(TasksDTO taskDto) {
+	public TasksDTO updateTask(TasksDTO taskDto) {
 		Tasks task = taskConverter.toTaskEntity(taskDto);
-		Integer updateCount = taskRepository.updateTask(task);
-		return updateCount;
+		Tasks updateTask = taskRepository.updateTask(task);
+		TasksDTO tasksDto = taskConverter.toTasksDTO(updateTask);
+		return tasksDto;
 	}
 
 	//タスクの削除
