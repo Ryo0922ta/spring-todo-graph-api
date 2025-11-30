@@ -73,6 +73,7 @@
 			<if test="taskName != null and taskName!='' ">task_name = #{taskName},</if>
 			<if test="importance != null">importance = #{importance},</if>
 			<if test="urgency != null">urgency = #{urgency},</if>
+			<if test="stateId != null">state_Id = #{stateId},</if>
 		</set>
 		WHERE task_id = #{taskId}
 		RETURNING

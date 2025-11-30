@@ -8,7 +8,7 @@
     /* なぜこんなにたくさんいるのか ? : 仕様上設定しているスタイルでフォントを表示する*/
     font-family: -apple-system, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     /* linear-gradient  グラデージョンを表示*/
-    background: linear-gradient(#2e2b3e);
+    background: #2e2b3e;
     /* vh ? : view hight ？*/
     min-height: 100vh;
     padding: 20px;
@@ -104,7 +104,7 @@
 
 .kanban-board {
     display: grid;
-    /* frって？　⇨ fraciton(割合) 利用可能なスペースを示すための何等分するかを表す単位*/
+    /* frって？　⇨ fraction(割合) 利用可能なスペースを示すための何等分するかを表す単位*/
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
@@ -123,9 +123,18 @@
     border-bottom: 3px solid #667eea;
     font-size: 1.2rem;
 }
+.todo {
+    color: #98f02c;
+}
+.doing {
+    color: #f50b0b;
+}
+
+.done {
+    color: #7f7a7adb;
+}
 
 .task-list {
-    /* どんな理由？ */
     min-height: 300px;
 }
 
@@ -136,8 +145,13 @@
     padding: 12px;
     margin-bottom: 10px;
     cursor: move;
-    /* allが必要な理由は？ task-cardの全ての要素に対してtranstionさせたいから*/
+    /* allが必要な理由は？ task-cardの全ての要素に対してtransitionさせたいから*/
     transition: all 0.3s;
+}
+
+.task-card.ui-draggable-dragging {
+    width: 80%;
+    max-width: 260px;
 }
 
 /* なぜtask-card task-titleじゃないのか ⇨ そう書いてしまうとcssでは親子関係を表すことになる*/
@@ -163,7 +177,7 @@
 }
 
 /* なぜ task-badge urgency-badge　task-badge importance-badge　と指定するとスタイルが当たらない？ */
-/* なぜtask-badgeにbackgroud指定じゃないのか */
+/* なぜtask-badgeにbackground指定じゃないのか */
 .urgency-badge {
     background: #fce7f3;
     color: #922206;
@@ -220,19 +234,93 @@
 /* ここだけ高さ指定は意味があるのか 
 ⇨ 散布図を表示したいのなら表示領域の内部を計算して配置する絶対位置の座標が必要なため*/
 #scatter-chart {
-    width: 100px;
+    position: relative;
+    width: 100%;
     height: 400px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
+    padding: 20px 40px;
     background: #fafafa;
+}
+
+.chart-axis {
+    position: absolute;
+}
+
+.x-axis {
+    left: 10%;
+    bottom: 38px;
+    height: 2px;
+    width: 80%;
+    background: #2e2e2e;
+}
+
+.x-label {
+    left: 40%;
+    bottom: 15px;
+}
+
+.y-axis {
+    top: 10%;
+    left: 10%;
+    height: 80%;
+    width: 2px;
+    background: #2e2e2e;
+}
+
+.y-label {
+    left: 0;
+    top: 44%;
+    transform: rotate(270deg);
+}
+
+.x-label,
+.y-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.chart-point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.chart-point.todo {
+    background: #98f02c;
+}
+.chart-point.doing {
+    background: #f50b0b;
+}
+.chart-point.done {
+    background: #7f7a7adb;
+    opacity: 0.4;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 1000;
 }
 
 .overlay {
     display: none;
     position: fixed;
+    background-color: rgba(0, 0, 0, 0.5);
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
     height: 100%;
     z-index: 10;
@@ -244,7 +332,7 @@
     top:50%;
     left:50%;
     transform: translate(-50%,-50%); 
-    */
+*/
 
 .taskDetailMdl {
     display: none;
@@ -341,4 +429,23 @@
 
 .close-mdl-btn:hover {
     background: #d51717;
+}
+
+@media (max-width: 1024px) {
+    .form-group {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .form-group label {
+        align-items: center;
+    }
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
 }

@@ -26,7 +26,9 @@ $(".close-mdl-btn , #overlay").on("click", function () {
 });
 
 $(".edit-action-btn").on("click", async function () {
-    await updateTask();
+    const taskId = $(this).data("task-id");
+    console.log(taskId);
+    await updateTask(taskId);
     closeModal();
 });
 
@@ -41,8 +43,8 @@ $(".taskDetailMdl").on("click", function (event) {
 async function allTaskLoad() {
     const taskList = await allTaskFetch();
     taskList.forEach((task) => {
+        renderScatter(task);
         const taskCard = createTaskCard(task);
-
         switch (task.stateId) {
             case 1:
                 $("#todoList").append(taskCard);
@@ -55,6 +57,10 @@ async function allTaskLoad() {
                 break;
         }
     });
+    makeDraggable();
+    makeDroppable(taskList);
+
+    return taskList;
 }
 
 async function taskLoad(taskId) {
@@ -62,7 +68,7 @@ async function taskLoad(taskId) {
     $("input.editTaskName").val(response.taskName);
     $("input.editUrgency").val(response.urgency);
     $("input.editImportance").val(response.importance);
-    $("input.editTaskId").val(response.taskId);
+    $(".edit-action-btn").attr("data-task-id", response.taskId);
 }
 
 // ##メインロジック　btnロジック
@@ -87,12 +93,12 @@ async function addTask() {
             dataType: "json",
             data: JSON.stringify(payload), // jsのオブジェクト型をjson形式に変換する
         });
-
+        renderScatter(newTask);
         const newTaskCard = createTaskCard(newTask);
         switch (newTask.stateId) {
             case 1:
                 $("#todoList").append(newTaskCard);
-                break;
+                break; //breakはswitchから抜けるだけ
             case 2:
                 $("#inProgressList").append(newTaskCard);
                 break;
@@ -105,6 +111,7 @@ async function addTask() {
     } catch (jqXHR) {
         httpErrorHandler(jqXHR);
     }
+    makeDraggable();
 }
 
 async function deleteTask(taskId, btnElement) {
@@ -119,24 +126,31 @@ async function deleteTask(taskId, btnElement) {
         });
 
         $(btnElement).closest(".task-card").remove();
+        $(`.chart-point[data-task-id="${taskId}"]`).remove();
     } catch (jqXHR) {
         httpErrorHandler(jqXHR);
     }
 }
 
-async function updateTask() {
+async function updateTask(taskId, stateId = null) {
     try {
-        taskId = $("input[name='editedTaskId']").val();
+        taskName = normalizeValue($("input[name='editedTaskName']").val());
+        urgency = normalizeValue($("input[name='editedUrgency']").val());
+        importance = normalizeValue($("input[name='editedImportance']").val());
+
+        //　一覧表示や追加と違って既存のタスクカードを更新しないといけない
+
+        stateId = normalizeValue(stateId);
 
         const editedpayload = {
             taskId: taskId,
-            taskName: $("input[name='editedTaskName']").val(),
-            urgency: parseInt($("input[name='editedUrgency']").val()),
-            importance: parseInt($("input[name='editedImportance']").val()),
+            taskName: taskName,
+            urgency: urgency,
+            importance: importance,
             userId: 1,
-            stateId: null,
+            stateId: stateId,
         };
-        //リロードしたら更新かかっていたのになぜかエラーに引っかかってた。。apiが正しくresponse出来てなかった。
+        // リロードしたら更新かかっていたのになぜかエラーに引っかかってた。。apiが正しくresponse出来てなかった。
         const updatedTask = await $.ajax({
             url: `http://localhost:8080/api/tasks/${taskId}`,
             method: "PUT",
@@ -144,22 +158,17 @@ async function updateTask() {
             dataType: "json",
             data: JSON.stringify(editedpayload),
         });
-
-        //　一覧表示や追加と違って既存のタスクカードを更新しないといけない
+        $(`.chart-point[data-task-id="${taskId}"]`).remove();
+        renderScatter(updatedTask);
         const $card = $(`.task-card[data-task-id="${taskId}"]`);
-        const updateTaskCard = createTaskCard(updatedTask);
-
-        // console.log("updateTask", updatedTask);
-        switch (updatedTask.stateId) {
-            case 1:
-                $card.replaceWith(updateTaskCard);
-                break;
-            case 2:
-                $card.replaceWith(updateTaskCard);
-                break;
-            case 3:
-                $card.replaceWith(updateTaskCard);
-                break;
+        if (stateId === null) {
+            $card.find(".task-title").text(updatedTask.taskName);
+            $card.find(".urgency-badge").text(`緊急度: ${updatedTask.urgency}`);
+            $card
+                .find(".importance-badge")
+                .text(`重要度: ${updatedTask.importance}`);
+            makeDraggable();
+            return;
         }
     } catch (jqXHR) {
         httpErrorHandler(jqXHR);
@@ -201,13 +210,63 @@ async function taskfetch(taskId) {
 
 // モーダル表示
 function openModal() {
-    console.log("openModalは呼ばれてるよ");
     $("#overlay, .taskDetailMdl").fadeIn(); //" , " の書き方注意
 }
 
 // モーダル非表示
 function closeModal() {
     $("#overlay, .taskDetailMdl").fadeOut();
+}
+
+function makeDraggable() {
+    // drag可能にする
+    $(".task-card").draggable({
+        //helperがないとdrag中のtop leftがそのまま残ってしまう。
+        helper: "clone",
+        revert: "invalid",
+        cursor: "move",
+        zIndex: 1000,
+    });
+}
+
+function makeDroppable(taskList) {
+    const stateNameToStateId = {
+        todo: 1,
+        doing: 2,
+        done: 3,
+    };
+    // console.log("tasklist", taskList);
+    //drop可能にする
+    $(".task-list").droppable({
+        accept: function (draggable) {
+            const fromState = $(draggable)
+                .closest(".task-list")
+                .parent()
+                .data("status");
+            const toState = $(this).parent().data("status");
+            return fromState !== toState;
+        },
+        hoverClass: "ui-state-hover",
+        drop: async function (event, ui) {
+            const $droppedCard = ui.draggable;
+            const $originalList = $droppedCard.closest(".task-list");
+
+            targetTaskId = parseInt(ui.draggable.data("task-id"));
+            newTaskStatusId =
+                stateNameToStateId[$(this).parent().data("status")];
+
+            $(this).append($droppedCard);
+
+            try {
+                await updateTask(targetTaskId, newTaskStatusId);
+            } catch (e) {
+                alert("更新に失敗したのでUIを戻します。");
+                // ui.draggable.closest(".task-list").append($droppedCard);
+                // このコードでは元の位置にはならない。append後の処理だから closest()が位置しないところを指してしまう
+                $originalList.append($droppedCard);
+            }
+        },
+    });
 }
 
 // ##UI生成
@@ -227,6 +286,74 @@ function createTaskCard(task) {
 				</div>
 			</div>
 		`);
+}
+
+function renderScatter(task) {
+    const stateIdtoStateName = {
+        1: "todo",
+        2: "doing",
+        3: "done",
+    };
+
+    const chart = $("#scatter-chart");
+    // chart.find(".chart-point").remove();
+    const chartWidth = chart.width() * 0.8;
+    const chartHeight = chart.height() * 0.8;
+
+    const x = (task.urgency / 10) * chartWidth + 0.1 * chartWidth;
+    const y =
+        chartHeight - (task.importance / 10) * chartHeight + 0.1 * chartHeight;
+    //(task.importance / 10) chartHeight 重要度の値から求めた値
+    // 0.1 * chartHeight　topを10%と設定しているからその分の高さ
+
+    const point = $(
+        `<div class="chart-point ${
+            stateIdtoStateName[task.stateId]
+        }"data-task-id="${task.taskId}"></div>`
+    );
+
+    point.css({
+        left: x + "px",
+        top: y + "px",
+    });
+
+    point.hover(
+        function (e) {
+            const tooltip = $(".tooltip");
+
+            tooltip.html(
+                `<div>
+                <strong>
+                タイトル : ${task.taskName}
+                </strong></br>
+                重要度(y軸):${task.importance} | 緊急度(x軸):${
+                    task.urgency
+                }</br>
+                タスクの状態:${stateIdtoStateName[task.stateId]}</br>
+                </div>`
+            );
+
+            const windowWidth = $(window).width();
+            const tooltipWidth = tooltip.outerWidth(); //ここで定義しないと想定されるwidthが取れない
+            let tooltipX = e.pageX + 10;
+            const tooltipY = e.pageY + 10;
+
+            if (tooltipX + tooltipWidth > windowWidth) {
+                tooltipX = e.pageX - tooltipWidth - 10; // constで定義していたから再代入するなで怒られた。　Assignment to constant variable.
+            }
+
+            tooltip.css({
+                display: "block",
+                left: tooltipX + "px",
+                top: tooltipY + "px",
+            });
+        },
+        function () {
+            $(".tooltip").css({ display: "none" }); //これじゃダメな理由がわからない ->  セレクタとnoneの渡し方が良くなかっただけだった。
+        }
+    );
+
+    chart.append(point);
 }
 
 // ##共通関数
@@ -264,3 +391,24 @@ function httpErrorHandler(jqXHR) {
         );
     }
 }
+
+function normalizeValue(value) {
+    if (value == null) {
+        // null or undefineを検知
+        return null;
+    }
+    if (typeof value == "number") {
+        // 数字
+        return value;
+    }
+    if (typeof value == "string" && value.trim() === "") {
+        /// "  "　などの空白を検知
+        return null;
+    }
+
+    return value;
+}
+
+$(window).resize(function () {
+    
+});

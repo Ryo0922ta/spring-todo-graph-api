@@ -80,11 +80,11 @@ public class TasksRepositoryTest {
 	void TestUpdate() {
 		TasksDTO dto = new TasksDTO(
 				3L, //taskId
-				"", // taskname
-				5, // importance
-				5, // urgency
+				"", // taskName
+				null, // importance
+				null, // urgency
 				1L, // user_id
-				null);
+				2L);
 
 		TaskConverter taskConverter = new TaskConverter();
 		Tasks task = taskConverter.toTaskEntity(dto);
