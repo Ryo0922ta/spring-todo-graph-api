@@ -25,11 +25,11 @@ public class TaskService {
 	public List<TasksDTO> findAllTasks() {
 		List<Tasks> taskList = taskRepository.findAllTasks();
 		//		リストの中身を一つずつストリームで流し、変換し、まとめ直す
-		List<TasksDTO> taskListDTO = taskList
+		List<TasksDTO> taskListDto = taskList
 				.stream()
 				.map(task -> taskConverter.toTasksDTO(task))
 				.collect(Collectors.toList());
-		return taskListDTO;
+		return taskListDto;
 	}
 
 	//任意のタスク表示

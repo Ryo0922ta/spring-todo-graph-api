@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "cognito.user-pool",
+    "type": "java.lang.String",
+    "description": "A description for 'cognito.user-pool'"
+  },
+  {
+    "name": "cognito.client-id",
+    "type": "java.lang.String",
+    "description": "A description for 'cognito.client-id'"
+  },
+  {
+    "name": "cognito.endpoint",
+    "type": "java.lang.String",
+    "description": "A description for 'cognito.endpoint'"
+  }
+]}

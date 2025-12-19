@@ -183,6 +183,7 @@ async function allTaskFetch() {
             url: "http://localhost:8080/api/tasks",
             method: "GET",
             dataType: "json",
+            xhrFields: { withCredentials: true },
             timeout: 5000,
         });
         // .ajaxだとdataTypeで直接jsonを指定できるからjson()不要
@@ -409,6 +410,4 @@ function normalizeValue(value) {
     return value;
 }
 
-$(window).resize(function () {
-    
-});
+$(window).resize(function () {});
