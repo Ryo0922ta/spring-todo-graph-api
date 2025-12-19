@@ -13,6 +13,18 @@ public class TasksDTO {
 
 	private Long stateId;
 
+	public TasksDTO() {
+	}
+
+	public TasksDTO(Long taskId, String taskName, Integer importance, Integer urgency, Long userId, Long stateId) {
+		this.taskId = taskId;
+		this.taskName = taskName;
+		this.importance = importance;
+		this.urgency = urgency;
+		this.userId = userId;
+		this.stateId = stateId;
+	}
+
 	public Long getTaskId() {
 		return taskId;
 	}

@@ -25,24 +25,36 @@ public class TaskService {
 	public List<TasksDTO> findAllTasks() {
 		List<Tasks> taskList = taskRepository.findAllTasks();
 		//		リストの中身を一つずつストリームで流し、変換し、まとめ直す
-		List<TasksDTO> taskListDTO = taskList
+		List<TasksDTO> taskListDto = taskList
 				.stream()
 				.map(task -> taskConverter.toTasksDTO(task))
 				.collect(Collectors.toList());
-		return taskListDTO;
+		return taskListDto;
+	}
+
+	//任意のタスク表示
+	public TasksDTO findTask(Long taskId) {
+		Tasks task = taskRepository.findTasks(taskId);
+		TasksDTO tasksDTO = taskConverter.toTasksDTO(task);
+		return tasksDTO;
 	}
 
 	//タスクの追加
-	public Integer saveTask(Tasks task) {
-		Integer saveCount = taskRepository.saveTask(task);
-		return saveCount;
+	public TasksDTO saveTask(TasksDTO taskDto) {
+		Tasks task = taskConverter.toTaskEntity(taskDto);
+		taskRepository.saveTask(task);
+		Tasks newTask = taskRepository.findTasks(task.getTaskId());
+		TasksDTO tasksDto = taskConverter.toTasksDTO(newTask);
+		return tasksDto;
 
 	}
 
 	//タスク更新
-	public Integer updateTask(Tasks task) {
-		Integer updateCount = taskRepository.updateTask(task);
-		return updateCount;
+	public TasksDTO updateTask(TasksDTO taskDto) {
+		Tasks task = taskConverter.toTaskEntity(taskDto);
+		Tasks updateTask = taskRepository.updateTask(task);
+		TasksDTO tasksDto = taskConverter.toTasksDTO(updateTask);
+		return tasksDto;
 	}
 
 	//タスクの削除

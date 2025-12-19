@@ -1,0 +1,5 @@
+auth.clientId=${CLIENT_ID} // クライアントID
+auth.clientSecret=${CLIENT_SECRET} // クライアントシークレット
+auth.jwk-set-uri=${JWK_SET_URI} // トークン署名キーURL
+auth.issuer-uri=${ISSUER_URI} // トークン署名キーURLの/.well-known/jwk.jsonを削除したもの
+auth.redirect-uri=${REDIRECT_URI} // 許可されているコールバックURL（Cognitoで自分が設定したもの）

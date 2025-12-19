@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### 環境変数 ###
+auth-config-develop.properties
+application-test.properties
+
 ### STS ###
 .apt_generated
 .classpath
